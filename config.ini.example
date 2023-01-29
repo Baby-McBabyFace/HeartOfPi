@@ -1,0 +1,3 @@
+[variables]
+RPI_HOST = 192.168.16.16
+RPI_PORT = 16160
