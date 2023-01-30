@@ -1,4 +1,5 @@
 import serial
+import struct
 
 class Serial:
     def __init__(self, interface, baud=9600):
@@ -8,17 +9,15 @@ class Serial:
         
     def send_command(self, command):
         command = str.encode(command)
-        print(type(command))
         self.ser.write(command)
         
     def receive_command(self):
         return self.ser.readline().decode().strip()
     
     def send_int_to_byte_command(self, command):
-        command = int.to_bytes(command, 8, 'big')
-        print(type(command))
+        command = struct.pack('<i', command)
         self.ser.write(command)
-    
+
     def receive_int_to_byte_command(self):
         return self.ser.readline()
     
