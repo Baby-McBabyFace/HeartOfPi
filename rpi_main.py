@@ -15,8 +15,7 @@ def main():
     port = int(config.get("variables", "RPI_PORT"))
     
     bluetooth = connSerial.Serial(interface="/dev/rfcomm0")
-    # TODO: Test serial connection between pi and stm32
-    # usb = connSerial.Serial(interface="/dev/ttyUSB0", baud=115200)
+    usb = connSerial.Serial(interface="/dev/ttyUSB0", baud=115200)
     
     obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
     
@@ -30,10 +29,10 @@ def main():
             break
         elif(command == "MOVE/F"):
             bluetooth.send_command(command="Robot is moving Forward")
-            # usb.send_command(command="CONTROL")
+            usb.send_int_to_byte_command(command=12345)
         elif(command == "MOVE/B"):
-            bluetooth.send_command(command="Robot is moving Backwards")
-            # usb.send_command(command="CONTROL")
+            bluetooth.send_command(command="Robot is Reversing")
+            usb.send_command(command="REVERSE")
         elif(command == "MOVE/R"):
             bluetooth.send_command(command="Robot is moving Right")
             # usb.send_command(command="CONTROL")
@@ -41,10 +40,10 @@ def main():
             bluetooth.send_command(command="Robot is moving Left")
             # usb.send_command(command="CONTROL")
         elif(command == "MOVE/BR"):
-            bluetooth.send_command(command="Robot is moving Backwards Right")
+            bluetooth.send_command(command="Robot is Reversing Right")
             # usb.send_command(command="CONTROL")
         elif(command == "MOVE/BL"):
-            bluetooth.send_command(command="Robot is moving Backwards Left")
+            bluetooth.send_command(command="Robot is Reversing Left")
             # usb.send_command(command="CONTROL")
         else:
             bluetooth.send_command(command="Obstacles updated")
