@@ -6,6 +6,28 @@ import time
 import connSerial
 import str2list
 
+def estBluetooth():
+    while(True):
+        try:
+            print("Checking Bluetooth connection...")
+            bluetooth = connSerial.Serial(interface="/dev/rfcomm0")
+            print("Bluetooth successfully connected")
+            return bluetooth
+        except Exception as e:
+            print("Bluetooth not connected... Retrying in 5 seconds")
+            time.sleep(5)
+
+def estUSB():
+    while(True):
+        try:
+            print("Checking USB connection...")
+            usb = connSerial.Serial(interface="/dev/ttyUSB0", baud=115200)
+            print("USB successfully connected")
+            return usb
+        except Exception as e:
+            print("Bluetooth not connected... Retrying in 5 seconds")
+            time.sleep(5)
+
 def main():
     # Initial Variables
     config = configparser.ConfigParser()
@@ -14,8 +36,8 @@ def main():
     host = config.get("variables", "RPI_HOST")
     port = int(config.get("variables", "RPI_PORT"))
     
-    bluetooth = connSerial.Serial(interface="/dev/rfcomm0")
-    usb = connSerial.Serial(interface="/dev/ttyUSB0", baud=115200)
+    bluetooth = estBluetooth()
+    usb = estUSB()
     
     obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
     
