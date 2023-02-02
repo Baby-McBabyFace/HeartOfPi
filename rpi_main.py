@@ -37,7 +37,7 @@ def main():
     port = int(config.get("variables", "RPI_PORT"))
     
     bluetooth = estBluetooth()
-    usb = estUSB()
+    # usb = estUSB()
     
     obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
     
@@ -51,10 +51,9 @@ def main():
             break
         elif(command == "MOVE/F"):
             bluetooth.send_command(command="Robot is moving Forward")
-            usb.send_int_to_byte_command(command=12345)
+            bluetooth.send_stm_command(move=1, x=10, y=0)
         elif(command == "MOVE/B"):
             bluetooth.send_command(command="Robot is Reversing")
-            usb.send_command(command="REVERSE")
         elif(command == "MOVE/R"):
             bluetooth.send_command(command="Robot is moving Right")
             # usb.send_command(command="CONTROL")

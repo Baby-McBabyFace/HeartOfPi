@@ -14,11 +14,11 @@ class Serial:
     def receive_command(self):
         return self.ser.readline().decode().strip()
     
-    def send_int_to_byte_command(self, command):
-        command = struct.pack('<i', command)
+    def send_stm_command(self, move, x, y):
+        command = struct.pack('>BII', move, x, y)
         self.ser.write(command)
 
-    def receive_int_to_byte_command(self):
+    def receive_stm_command(self):
         return self.ser.readline()
     
     def close(self):
