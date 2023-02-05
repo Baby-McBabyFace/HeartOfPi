@@ -14,8 +14,12 @@ class Serial:
     def receive_command(self):
         return self.ser.readline().decode().strip()
     
-    def send_stm_command(self, move, x, y):
-        command = struct.pack('>BII', move, x, y)
+    def send_stm_command_axis(self, move, x, y):
+        command = struct.pack('>biib', move, x, y, 0)
+        self.ser.write(command)
+
+    def send_stm_command_angle(self, move, angle):
+        command = struct.pack('>bib', move, angle, 0)
         self.ser.write(command)
 
     def receive_stm_command(self):

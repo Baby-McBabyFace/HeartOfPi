@@ -19,10 +19,9 @@ class Server:
         print(f"Creating server at {self.host}:{self.port}")
         self.socket.bind((self.host, self.port))
         self.socket.listen()
-        print("Listening for connection...")
 
         self.conn, self.address = self.socket.accept()
-        print(f"Connection from {self.address}")
+        # print(f"Connection from {self.address}")
 
     def send_data(self, payload):
         payload = pickle.dumps(payload)

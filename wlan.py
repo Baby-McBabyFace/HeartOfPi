@@ -8,18 +8,19 @@ class Wlan:
         self.host = host
         self.port = port
         self.obstacles = obstacles
+        self.server = Server(self.host, self.port)
     
     def start(self):
-        server = Server(self.host, self.port)
         # Wait for the PC to connect to the RPi.
         print("Listing for connection on {}:{}...".format(self.host, self.port))
         
         try:
-            server.start()
+            self.server.start()
         except Exception as e:
             print(e)
-            server.close()
+            self.server.close()
             sys.exit(1)
+            return 0
             
         print("Connection from {}:{} established!\n".format(server.address[0], server.address[1]))
 
@@ -27,13 +28,18 @@ class Wlan:
         print("Sending obstacle data to PC at {}:{}".format(server.address[0],server.address[1]))
         # payload = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         payload = self.obstacles
-        server.send_data(payload)
+        self.server.send_data(payload)
         
+        print("Sent obstacle data to Laptop")
+        return 1
+        
+    def receive_data(self):        
         print("Waiting to receive data...")
-        payload = server.receive_data()
-        print(payload)
+        payload = self.server.receive_data()
+        return payload
         
-        server.close()
+    def close(self):
+        self.server.close()
         
         # # Receive commands from the PC.
         # print("Receiving robot commands from PC...")
