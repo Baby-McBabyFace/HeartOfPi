@@ -56,16 +56,18 @@ def main():
             elif(command == "MOVE/F"):
                 bluetooth.send_command(command="Sending command to STM")
                 usb.send_stm_command_axis(move=1, x=0, y=10)
+                myRobot.delta(delta_y=10)
                 command = usb.receive_stm_command()
                 if(command == "END"):
-                    bluetooth.send_command(command="Robot has moved forward")
+                    bluetooth.send_command(command=myRobot.get_coords())
             
             elif(command == "MOVE/B"):
                 bluetooth.send_command(command="Robot is Reversing")
                 usb.send_stm_command_axis(move=2, x=0, y=-10)
+                myRobot.delta(delta_y=-10)
                 command = usb.receive_stm_command()
                 if(command == "END"):
-                    bluetooth.send_command(command="Robot has reversed")
+                    bluetooth.send_command(command=myRobot.get_coords())
             
             elif(command == "MOVE/L"):
                 bluetooth.send_command(command="Robot is moving Left")

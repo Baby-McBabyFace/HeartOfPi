@@ -5,7 +5,7 @@ for i in myList:
     print(i[0])
     if(i[0][:1] == "f"):
         move = 1
-        i[0] = i[0][:1]
+        i[0] = str(move) + i[0][1:]
     elif(i[0] == "r"):
         move = 4
 

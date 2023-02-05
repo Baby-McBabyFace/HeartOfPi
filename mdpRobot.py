@@ -3,12 +3,10 @@ class Robot:
         self.x = x
         self.y = y
     
-    def delta_x(self, delta):
-        self.x = self.x + delta
-    
-    def delta_y(self, delta):
-        self.y = self.y + delta
-    
+    def delta(self, delta_x = 0, delta_y = 0):
+        self.x = self.x + delta_x
+        self.y = self.y + delta_y
+        
     def get_coords(self):
         return self.x, self.y
     

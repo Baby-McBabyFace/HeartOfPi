@@ -22,10 +22,10 @@ class Wlan:
             sys.exit(1)
             return 0
             
-        print("Connection from {}:{} established!\n".format(server.address[0], server.address[1]))
+        print("Connection from {}:{} established!\n".format(self.server.address[0], server.address[1]))
 
         # Send over the obstacle data to the PC.
-        print("Sending obstacle data to PC at {}:{}".format(server.address[0],server.address[1]))
+        print("Sending obstacle data to PC at {}:{}".format(self.server.address[0],server.address[1]))
         # payload = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         payload = self.obstacles
         self.server.send_data(payload)
