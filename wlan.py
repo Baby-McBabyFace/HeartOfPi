@@ -38,6 +38,9 @@ class Wlan:
         payload = self.server.receive_data()
         return payload
         
+    def send_data(self, payload):        
+        self.server.send_data(payload=payload)
+        
     def close(self):
         self.server.close()
         

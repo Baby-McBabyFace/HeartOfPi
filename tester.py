@@ -1,3 +1,5 @@
+# THIS IS A TEST FILE
+
 import translator
 import str2list
 

@@ -7,6 +7,8 @@ import connSerial
 import str2list
 import mdpRobot
 import translator
+import img_rec
+import bluetoothctl
 
 def estBluetooth():
     while(True):
@@ -16,7 +18,9 @@ def estBluetooth():
             print("Bluetooth successfully connected")
             return bluetooth
         except Exception as e:
-            print("Bluetooth not connected... Retrying in 5 seconds")
+            print("Bluetooth not connected... Enabling Discovery mode...")
+            bl = bluetoothctl.Bluetoothctl()
+            bl.make_discoverable()
             time.sleep(5)
 
 def estUSB():
@@ -43,6 +47,7 @@ def main():
         bluetooth = estBluetooth()
         usb = estUSB()
         
+        STMEND = "END"
         # obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         obstacles = []
         while True:
@@ -51,6 +56,7 @@ def main():
             command = command.split('/')
             instruction = command.pop(0)
             
+            # Obstacle paths
             if(instruction == "START"):
                 task = command.pop(0)
                 
@@ -75,66 +81,122 @@ def main():
                         for movement in path:
                             move, val1, val2 = translator.client2stmTranslate(movement[0])
                             if(move == 7):
-                                # TAKE PICTURE
-                                print("TAKE PIC")
-                                obs_counter += 1
+                                img_rec.imgRec()
+                                result = wifi.receive_data()
+                                if(result != -1):
+                                    obs_counter += 1
+                                    wifi.send_data(payload="NEXT")
+                                    bluetooth.send_command(command=result)
                             elif(val2 is None):
                                 usb.send_stm_command_angle(move, val1)
+                                myRobot.update_delta_turn(movement=move, angle=val1)
                             else:
                                 usb.send_stm_command_axis(move, val1, val2)
+                                myRobot.update_delta_straight(movement=move, distance=val2)
                             
                             command = usb.receive_stm_command()
-                            if(command == "END"):
+                            if(command == STMEND):
                                 bluetooth.send_command(command=myRobot.get_coords())
-                    
+                                
+                    wifi.send_data(payload=STMEND)
                     wifi.close()
                     
                     
                 elif(task == "PATH"):
+                    #TODO Fastest robot
                     print("TASK #02")
             
+            # Manual Movements
             elif(instruction == "MOVE"):
                 direction = command.pop(0)
                 
                 bluetooth.send_command(command="Sending command to STM")
                 if(direction == "F"):
                     usb.send_stm_command_axis(move=1, x=0, y=10)
-                    myRobot.delta(delta_y=1)
-                        
+                    myRobot.update_delta_straight(movement=1, distance=10)
+                    
                 elif(direction == "B"):
                     usb.send_stm_command_axis(move=2, x=0, y=-10)
-                    myRobot.delta(delta_y=-1)
+                    myRobot.update_delta_straight(movement=2, distance=10)
                     
                 elif(direction == "L"):
                     usb.send_stm_command_angle(move=3, angle=90)
-                    myRobot.delta(delta_x=-3, delta_y=3)
+                    myRobot.update_delta_turn(movement=3, angle=90)
                 
                 elif(direction == "R"):
                     usb.send_stm_command_angle(move=4, angle=90)
-                    myRobot.delta(delta_x=3, delta_y=3)
+                    myRobot.update_delta_turn(movement=4, angle=90)
 
                 elif(direction == "BL"):
                     usb.send_stm_command_angle(move=5, angle=90)
-                    myRobot.delta(delta_x=-3, delta_y=-3)
+                    myRobot.update_delta_turn(movement=5, angle=90)
 
                 elif(direction == "BR"):
                     usb.send_stm_command_angle(move=6, angle=90)
-                    myRobot.delta(delta_x=3, delta_y=-3)
+                    myRobot.update_delta_turn(movement=6, angle=90)
                     
                 command = usb.receive_stm_command()
-                if(command == "END"):
+                if(command == STMEND):
                     bluetooth.send_command(command=myRobot.get_coords())
-            
+
+            # Stop Instruction
             elif(instruction == "STOP"):
                 bluetooth.send_command(command="STOP")
-        
+
+            # Task A.3
+            elif(instruction == "CUSTOMMOVE"): # "CUSTOMMOVE/F/90"
+                direction = command.pop(0)
+                
+                bluetooth.send_command(command="Sending command to STM")
+                
+                distance = command.pop(0)
+                
+                if(direction == "F"):    
+                    usb.send_stm_command_axis(move=1, x=0, y=int(distance))
+                    myRobot.update_delta_straight(move=1, distance=int(distance))
+                elif(direction == "B"):
+                    usb.send_stm_command_axis(move=2, x=0, y=int(-distance))
+                    myRobot.update_delta_straight(move=2, distance=int(distance))
+                
+                command = usb.receive_stm_command()
+                if(command == STMEND):
+                    bluetooth.send_command(command=myRobot.get_coords())
+                    
+            # Task A.4
+            elif(instruction == "CUSTOMTURN"): # "CUSTOMMOVE/L/180"
+                direction = command.pop(0)
+                
+                bluetooth.send_command(command="Sending command to STM")
+                
+                angle = command.pop(0)
+                
+                if(direction == "L"):
+                    usb.send_stm_command_angle(move=3, angle=int(angle))
+                    myRobot.update_delta_turn(movement=3, angle=int(angle))
+                
+                elif(direction == "R"):
+                    usb.send_stm_command_angle(move=4, angle=int(angle))
+                    myRobot.update_delta_turn(movement=4, angle=int(angle))
+
+                elif(direction == "BL"):
+                    usb.send_stm_command_angle(move=5, angle=int(angle))
+                    myRobot.update_delta_turn(movement=5, angle=int(angle))
+
+                elif(direction == "BR"):
+                    usb.send_stm_command_angle(move=6, angle=int(angle))
+                    myRobot.update_delta_turn(movement=6, angle=int(angle))
+                
+                command = usb.receive_stm_command()
+                if(command == STMEND):
+                    bluetooth.send_command(command=myRobot.get_coords())
+                    
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
-        # usb.close()
+        usb.close()
         wifi.close()
-        return 0
     
 if __name__ == '__main__':
-    while(main()):
+    while True:
         main()
+        time.sleep(5)
