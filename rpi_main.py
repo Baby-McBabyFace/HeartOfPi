@@ -109,19 +109,19 @@ def main():
             elif(instruction == "STOP"):
                 bluetooth.send_command(command="STOP")
                 
-        wifi = wlan.Wlan(host=host, port=port, obstacles=obstacles)
-        wifi.start() #Connect to Laptop and send obstacle data
-        while True():
-            payload = wifi.receive_data()
-            print(payload)
-            # assuming data is in list format and returning [["f030"], ["r090"], ["f050"]]
+        # wifi = wlan.Wlan(host=host, port=port, obstacles=obstacles)
+        # wifi.start() #Connect to Laptop and send obstacle data
+        # while True:
+        #     payload = wifi.receive_data()
+        #     print(payload)
+        #     # assuming data is in list format and returning [["f030"], ["r090"], ["f050"]]
             
-        wifi.close()
         
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
-        usb.close()
+        # usb.close()
+        wifi.close()
         return 0
     
 if __name__ == '__main__':
