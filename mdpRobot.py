@@ -8,5 +8,5 @@ class Robot:
         self.y = self.y + delta_y
         
     def get_coords(self):
-        return self.x, self.y
+        return "{}, {}".format(self.x, self.y)
     
