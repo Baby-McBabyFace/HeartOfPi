@@ -54,25 +54,44 @@ def main():
             if(instruction == "START"):
                 task = command.pop(0)
                 
-                if(task == "EXPLORE"):
+                if(task == "EXPLORE"): # EXAMPLE: "START/EXPLORE/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
                     robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
                     myRobot.delta(delta_x=int(robot_pos[1]), delta_y=int(robot_pos[2]))
                     bluetooth.send_command(command=myRobot.get_coords())
                     
-                    for obs_data in command:
-                        obs_data = translator.a2cTranslate(obs_data)
-                        obstacles.append(obs_data)
+                    obstacles = translator.android2clientTranslate(obs_data=command)
                     
                     wifi = wlan.Wlan(host=host, port=port, obstacles=obstacles)
                     wifi.start() #Connect to Laptop and send obstacle data
+                    # after this part, we will receive data from the client
+                    # assuming data is in list format and returning [['w030'], ['e090'], ['w050'], ['d000'], ['p001']]
+                    obs_counter = 0
+                    while True:
+                        if(obs_counter == len(obstacles)):
+                            break
+                        
+                        path = wifi.receive_data()
+                        path = str2list.convert(path)
+                        for movement in path:
+                            move, val1, val2 = translator.client2stmTranslate(movement[0])
+                            if(move == 7):
+                                # TAKE PICTURE
+                                print("TAKE PIC")
+                                obs_counter += 1
+                            elif(val2 is None):
+                                usb.send_stm_command_angle(move, val1)
+                            else:
+                                usb.send_stm_command_axis(move, val1, val2)
+                            
+                            command = usb.receive_stm_command()
+                            if(command == "END"):
+                                bluetooth.send_command(command=myRobot.get_coords())
+                    
+                    wifi.close()
+                    
                     
                 elif(task == "PATH"):
-                    print(2)
-                
-                bluetooth.send_command(command="Converting obstacle string to list...")
-                obstacles = str2list.convert(obstacles)
-                bluetooth.send_command(command="Starting server...")
-                break
+                    print("TASK #02")
             
             elif(instruction == "MOVE"):
                 direction = command.pop(0)
@@ -108,14 +127,6 @@ def main():
             
             elif(instruction == "STOP"):
                 bluetooth.send_command(command="STOP")
-                
-        # wifi = wlan.Wlan(host=host, port=port, obstacles=obstacles)
-        # wifi.start() #Connect to Laptop and send obstacle data
-        # while True:
-        #     payload = wifi.receive_data()
-        #     print(payload)
-        #     # assuming data is in list format and returning [["f030"], ["r090"], ["f050"]]
-            
         
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")
