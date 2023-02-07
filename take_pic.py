@@ -10,11 +10,11 @@ from picamera import PiCamera
 HOST = '192.168.16.28'   # (local or external) address IP of remote server
 PORT = 5001 # (local or external) port of remote server
 
-def sendImgToPC():
+def sendImgToPC(filename):
     
     def sender(s):
         
-        f = open(f'images/{fileName}.jpg','rb')
+        f = open(f'images/{filename}.jpg','rb')
 
         print('Sending...')
         
@@ -59,5 +59,5 @@ def main():
     camera.capture(f'images/{fileName}.jpg')
     camera.close()
 
-    label = sendImgToPC()
+    label = sendImgToPC(filename=fileName)
     print(label)
