@@ -7,7 +7,7 @@ import connSerial
 import str2list
 import mdpRobot
 import translator
-import img_rec
+import take_pic
 import bluetoothctl
 
 def estBluetooth():
@@ -81,7 +81,7 @@ def main():
                         for movement in path:
                             move, val1, val2 = translator.client2stmTranslate(movement[0])
                             if(move == 7):
-                                img_rec.imgRec()
+                                take_pic.main()
                                 result = wifi.receive_data()
                                 if(result != -1):
                                     obs_counter += 1

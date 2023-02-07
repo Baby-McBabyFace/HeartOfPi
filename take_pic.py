@@ -4,17 +4,17 @@ import sys
 import threading
 import time
 
+from picamera import PiCamera
 
 # --- constants ---
-HOST = '192.168.16.38'   # (local or external) address IP of remote server
+HOST = '192.168.16.28'   # (local or external) address IP of remote server
 PORT = 5001 # (local or external) port of remote server
 
 def sendImgToPC():
     
     def sender(s):
         
-        # f = open(f'/home/mdp2022/images/image.jpg','rb')
-        f = open(f'images/image.jpg','rb')
+        f = open(f'images/{fileName}.jpg','rb')
 
         print('Sending...')
         
@@ -22,17 +22,14 @@ def sendImgToPC():
         while data != bytes(''.encode()):
             s.sendall(data)
             data = f.read(4096)
-        
+
         print("IMG sent")
-
-        #time.sleep(3)
-        #print('[sendtopc.py] close socket')
+        time.sleep(3)
+        print('[sendtopc.py] close socket')
         s.close()
-
 
     try:
         # --- create socket ---
-        
         print('[sendtopc.py] create socket')
         s = socket.socket()         
         print('[sendtopc.py] connecting:', (HOST, PORT))
@@ -44,10 +41,8 @@ def sendImgToPC():
         # sendData.start()
 
         sender(s)
-        
-
-
-        
+        label = s.recv(1024).decode()
+        return label
 
     except Exception as e:
         print(e)
@@ -56,11 +51,13 @@ def sendImgToPC():
     except:
         print(sys.exc_info())
 
-def connect_to_server():
-    try:
-        s = socket.socket()
-        s.connect((HOST, PORT))
+def main():
+    camera = PiCamera()
+    camera.resolution=(615,462)
+    fileName = time.strftime("%Y%m%d-%H%M%S")
+    print("Taking photo 1...")
+    camera.capture(f'images/{fileName}.jpg')
+    camera.close()
 
-        return s.recv(1024).decode()
-    except socket.error:
-        print("Could not connect")
+    label = sendImgToPC()
+    print(label)
