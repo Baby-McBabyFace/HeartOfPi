@@ -57,6 +57,7 @@ def main():
             instruction = command.pop(0)
             
             # Obstacle paths
+            # Task 01
             if(instruction == "START"):
                 task = command.pop(0)
                 
@@ -101,9 +102,8 @@ def main():
                     wifi.send_data(payload=STMEND)
                     wifi.close()
                     
-                    
+                # Task 02
                 elif(task == "PATH"):
-                    #TODO Fastest robot
                     print("TASK #02")
             
             # Manual Movements
