@@ -57,10 +57,10 @@ def main():
             instruction = command.pop(0)
             
             # Obstacle paths
-            # Task 01
             if(instruction == "START"):
                 task = command.pop(0)
                 
+                # Task 01
                 if(task == "EXPLORE"): # EXAMPLE: "START/EXPLORE/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
                     robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
                     myRobot.delta(delta_x=int(robot_pos[1]), delta_y=int(robot_pos[2]))
