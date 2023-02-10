@@ -34,6 +34,15 @@ def estUSB():
             print("USB not connected... Retrying in 5 seconds")
             time.sleep(5)
 
+def estWifi(host, port):
+    try:
+        print("Establishing Server on Raspberry Pi")
+        wifi = wlan.Wlan(host=host, port=port)
+        wifi.start_server()
+        return wifi
+    except Exception as e:
+        print("Server unable to be established")
+        
 def main():
     try:
         # Initial Variables
@@ -46,14 +55,14 @@ def main():
         myRobot = mdpRobot.Robot(x=0, y=0)
         bluetooth = estBluetooth()
         usb = estUSB()
+        wifi = estWifi(host=host, port=port)
         
-        STMEND = "Movement Done!"
+        STMEND = "Movement Done!" # String to listen for when STM finishes command
         # obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         obstacles = []
         while True:
-            bluetooth.send_command(command="STATUS/Ready to start...")
+            bluetooth.send_command(command="STATUS/Ready to start")
             command = bluetooth.receive_command()   # Listening for Bluetooth Commands
-            print(command, type(command))
             command = command.split('/')
             instruction = command.pop(0)
             
@@ -69,18 +78,17 @@ def main():
                     
                     obstacles = translator.android2clientTranslate(obs_data=command)
                     
-                    wifi = wlan.Wlan(host=host, port=port, obstacles=obstacles)
-                    wifi.start() #Connect to Laptop and send obstacle data
+                    wifi.main(obstacles=obstacles) #Connect to Laptop and send obstacle data
                     # after this part, we will receive data from the client
                     # assuming data is in list format and returning [['w030'], ['e090'], ['w050'], ['d000'], ['p001']]
-                    wifi.send_data("START")
+                    path = wifi.receive_data()
+                    path = str2list.convert(path)
                     obs_counter = 0
                     while True:
                         if(obs_counter == len(obstacles)):
                             break
                         
-                        path = wifi.receive_data()
-                        path = str2list.convert(path)
+
                         for movement in path:
                             bluetooth.send_command(command=f"STATUS/Looking for target {obs_counter+1}")
                             move, val1, val2 = translator.client2stmTranslate(movement[0])
@@ -102,9 +110,6 @@ def main():
                             if(command == STMEND):
                                 bluetooth.send_command(command=myRobot.get_coords())
                                 
-                    wifi.send_data(payload=STMEND)
-                    wifi.close()
-                    
                 # Task 02
                 elif(task == "PATH"):
                     print("TASK #02")
