@@ -2,8 +2,8 @@ def android2clientTranslate(obs_data): #android to client translation
     obs_list = []
     for data in obs_data:
         data = data.replace("(", "").replace(")", "").split(",")
-        x = 10 * int(data[0]) + 5
-        y = 200 - (10 * int(data[1])) - 5
+        x = 10 * int(data[1]) + 5
+        y = 200 - (10 * int(data[2])) - 5
         obs_list.append([x, y, int(data[3]), int(data[0]) + 1])
     return obs_list
 
