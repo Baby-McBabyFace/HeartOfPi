@@ -47,12 +47,13 @@ def main():
         bluetooth = estBluetooth()
         usb = estUSB()
         
-        STMEND = "END"
+        STMEND = "Movement Done!"
         # obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         obstacles = []
         while True:
-            bluetooth.send_command(command="Listening to bluetooth commands...")
+            bluetooth.send_command(command="STATUS/Ready to start...")
             command = bluetooth.receive_command()   # Listening for Bluetooth Commands
+            print(command, type(command))
             command = command.split('/')
             instruction = command.pop(0)
             
@@ -72,6 +73,7 @@ def main():
                     wifi.start() #Connect to Laptop and send obstacle data
                     # after this part, we will receive data from the client
                     # assuming data is in list format and returning [['w030'], ['e090'], ['w050'], ['d000'], ['p001']]
+                    wifi.send_data("START")
                     obs_counter = 0
                     while True:
                         if(obs_counter == len(obstacles)):
@@ -80,6 +82,7 @@ def main():
                         path = wifi.receive_data()
                         path = str2list.convert(path)
                         for movement in path:
+                            bluetooth.send_command(command=f"STATUS/Looking for target {obs_counter+1}")
                             move, val1, val2 = translator.client2stmTranslate(movement[0])
                             if(move == 7):
                                 take_pic.main()
@@ -87,7 +90,7 @@ def main():
                                 if(result != -1):
                                     obs_counter += 1
                                     wifi.send_data(payload="NEXT")
-                                    bluetooth.send_command(command=result)
+                                    bluetooth.send_command(command=f"TARGET/{obs_counter}/{result}")
                             elif(val2 is None):
                                 usb.send_stm_command_angle(move, val1)
                                 myRobot.update_delta_turn(movement=move, angle=val1)
@@ -136,6 +139,7 @@ def main():
                     myRobot.update_delta_turn(movement=6, angle=90)
                     
                 command = usb.receive_stm_command()
+                print(command)
                 if(command == STMEND):
                     bluetooth.send_command(command=myRobot.get_coords())
 
@@ -195,8 +199,11 @@ def main():
         bluetooth.close()
         usb.close()
         wifi.close()
+
+    except:
+        print("EXIT")
     
 if __name__ == '__main__':
-    while True:
+    while(True):
         main()
         time.sleep(5)

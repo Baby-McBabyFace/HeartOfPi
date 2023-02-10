@@ -23,7 +23,7 @@ class Serial:
         self.ser.write(command)
 
     def receive_stm_command(self):
-        return self.ser.readline()
+        return self.ser.readline().decode().strip()
     
     def close(self):
         self.ser.close()
