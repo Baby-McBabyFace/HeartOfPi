@@ -36,9 +36,11 @@ class Wlan:
     def receive_data(self):        
         print("Waiting to receive data...")
         payload = self.server.receive_data()
+        print(f"Received from Laptop: {payload}")
         return payload
         
-    def send_data(self, payload):        
+    def send_data(self, payload):
+        print(f"Sending to Laptop: {payload}")        
         self.server.send_data(payload=payload)
         
     def close(self):

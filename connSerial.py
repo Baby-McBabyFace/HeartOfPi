@@ -8,22 +8,29 @@ class Serial:
         self.ser = serial.Serial(self.interface, self.baud)
         
     def send_command(self, command):
+        print(f"Sending to BT: {command}")
         command = str.encode(command)
         self.ser.write(command)
         
     def receive_command(self):
-        return self.ser.readline().decode().strip()
+        command = self.ser.readline().decode().strip()
+        print(f"Received from BT: {command}")
+        return command
     
     def send_stm_command_axis(self, move, x, y):
         command = struct.pack('>biib', move, x, y, 0)
+        print(f"Sending to STM: {command}")
         self.ser.write(command)
 
     def send_stm_command_angle(self, move, angle):
         command = struct.pack('>bib', move, angle, 0)
+        print(f"Sending to STM: {command}")
         self.ser.write(command)
 
     def receive_stm_command(self):
-        return self.ser.readline().decode().strip()
+        command = self.ser.readline().decode().strip()
+        print(f"Received from STM: {command}")
+        return command
     
     def close(self):
         self.ser.close()

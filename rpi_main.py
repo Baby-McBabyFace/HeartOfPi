@@ -8,7 +8,7 @@ import str2list
 import mdpRobot
 import translator
 import take_pic
-import bluetoothctl
+import subprocess
 
 def estBluetooth():
     while(True):
@@ -19,8 +19,7 @@ def estBluetooth():
             return bluetooth
         except Exception as e:
             print("Bluetooth not connected... Enabling Discovery mode...")
-            bl = bluetoothctl.Bluetoothctl()
-            bl.make_discoverable()
+            subprocess.call(['sudo', 'hciconfig', 'hci0', 'piscan'])
             time.sleep(5)
 
 def estUSB():
@@ -268,6 +267,10 @@ def main():
     except Exception as e:
         print("ERROR")
         print(e)
+        print("Closing all connections")
+        bluetooth.close()
+        usb.close()
+        wifi.close()
     
 if __name__ == '__main__':
     while(True):
