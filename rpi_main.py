@@ -122,8 +122,7 @@ def main():
                                             command = usb.receive_stm_command()
                                             if(command == STMEND):
                                                 bluetooth.send_command(command=myRobot.get_coords())
-                                        
-                                    
+                                                
                                     # Target found!
                                     elif(result != "-1"):
                                         result = int(result)
