@@ -101,8 +101,7 @@ def main():
                                 successRecognition = False
                                 recognitionFailed = 0
                                 while((not successRecognition) and (recognitionFailed < 3)):
-                                    take_pic.main()
-                                    result = wifi.receive_data() # Result of the image recognition
+                                    result = take_pic.main()
                                     
                                     if(result == 'bullseye'):
                                         fixed_commands = ["a090", "w060", "q090", "w025", "q090"]

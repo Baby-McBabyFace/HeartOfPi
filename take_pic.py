@@ -60,4 +60,4 @@ def main():
     camera.close()
 
     label = sendImgToPC(filename=fileName)
-    print(label)
+    return label
