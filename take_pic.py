@@ -61,6 +61,7 @@ def main():
 
     label = sendImgToPC(filename=fileName)
     print(label)
+    return label
     
 if __name__ == '__main__':
     main()
