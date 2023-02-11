@@ -1,5 +1,5 @@
 class Robot:
-    def __init__(self, x, y, orientation=720):
+    def __init__(self, x=0, y=0, orientation=720):
         self.x = x
         self.y = y
         self.orientation = orientation
