@@ -25,8 +25,6 @@ def sendImgToPC(filename):
 
         print("IMG sent")
         time.sleep(3)
-        print('[sendtopc.py] close socket')
-        s.close()
 
     try:
         # --- create socket ---
@@ -42,6 +40,8 @@ def sendImgToPC(filename):
 
         sender(s)
         label = s.recv(1024).decode()
+        print('[sendtopc.py] close socket')
+        s.close()
         return label
 
     except Exception as e:
