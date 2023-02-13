@@ -77,7 +77,7 @@ def main():
                 # Task 01
                 if(task == "EXPLORE"): # EXAMPLE: "START/EXPLORE/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
                     robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
-                    myRobot.delta(delta_x=int(robot_pos[1]), delta_y=int(robot_pos[2]))
+                    myRobot.robot_pos(delta_x=int(robot_pos[1]), delta_y=int(robot_pos[2]))
                     bluetooth.send_command(command=myRobot.get_coords())
                     
                     obstacles = translator.android2clientTranslate(obs_data=command)
@@ -105,6 +105,7 @@ def main():
                                     result = take_pic.main() # Result of the image recognition
                                     
                                     # Task A.5
+                                    # separate this from task 01
                                     if(result == 'bullseye'):
                                         fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
                                         for command in fixed_commands:
@@ -168,6 +169,10 @@ def main():
                                 
                 # Task 02
                 elif(task == "PATH"):
+                    # TODO send movement forward until STM reports to stop
+                    # take photo
+                    # pc tells left or rogit
+                    # if left, 
                     print("TASK #02")
             
             # Manual Movements

@@ -7,14 +7,13 @@ class Wlan:
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        # self.obstacles = obstacles
         self.server = Server(self.host, self.port)
     
     def main(self, obstacles):
         # Send over the obstacle data to the PC.
         print("Sending obstacle data to PC at {}:{}".format(self.server.address[0], self.server.address[1]))
         # payload = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
-        payload = self.obstacles
+        payload = obstacles
         self.server.send_data(payload)
         
         print("Sent obstacle data to Laptop")
