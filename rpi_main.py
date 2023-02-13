@@ -250,7 +250,7 @@ def main():
                 bluetooth.send_command(command=myRobot.get_coords())
                     
             # Task A.4
-            elif(instruction == "CUSTOMTURN"): # "CUSTOMMOVE/L/180"
+            elif(instruction == "CUSTOMTURN"): # "CUSTOMTURN/L/180"
                 direction = command.pop(0)
                 
                 bluetooth.send_command(command="Sending command to STM")
