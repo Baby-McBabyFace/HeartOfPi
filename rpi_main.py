@@ -103,6 +103,7 @@ def main():
                                 while((not successRecognition) and (recognitionFailed < 3)):
                                     result = take_pic.main() # Result of the image recognition
                                     
+                                    # Task A.5
                                     if(result == 'bullseye'):
                                         fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
                                         for command in fixed_commands:
@@ -130,6 +131,7 @@ def main():
                                         successRecognition = True # Mark as success
                                     
                                     else:
+                                        bluetooth.send_command(command=f"TARGET/{obs_counter+1}/{result}")
                                         recognitionFailed += 1
                                         # correctional movements
                                         if(recognitionFailed < 3):
