@@ -126,12 +126,11 @@ def main():
                                     # Target found!
                                     elif(result != "-1"):
                                         result = int(result)
-                                        obs_counter += 1
-                                        bluetooth.send_command(command=f"TARGET/{obs_counter}/{result}")
+                                        bluetooth.send_command(command=f"TARGET/{obs_counter + 1}/{result}")
                                         successRecognition = True # Mark as success
                                     
                                     else:
-                                        bluetooth.send_command(command=f"TARGET/{obs_counter+1}/{result}")
+                                        bluetooth.send_command(command=f"TARGET/{obs_counter + 1}/{result}")
                                         recognitionFailed += 1
                                         # correctional movements
                                         if(recognitionFailed < 3):
@@ -152,7 +151,8 @@ def main():
                                     command = usb.receive_stm_command()
                                     if(command == STMEND):
                                         bluetooth.send_command(command=myRobot.get_coords())
-                                        
+                                
+                                obs_counter += 1        
                                 break # Breaks out from the for loop and start from line 92
                             
                             # Turning command
