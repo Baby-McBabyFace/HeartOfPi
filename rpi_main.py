@@ -93,21 +93,22 @@ def main():
                             break
                         
                         bluetooth.send_command(command=f"STATUS/Looking for target {obs_counter+1}")
-                        for movement in path:    
-                            move, val1, val2 = translator.client2stmTranslate(movement[0])
+                        for i in range(len(path)):
+                            movement = path.pop(0)
+                            move, val1, val2 = translator.client2stmTranslate(movement)
                             
                             # Take picture command
                             if(move == 7):
                                 successRecognition = False
                                 recognitionFailed = 0
-                                while((not successRecognition) and (recognitionFailed < 3)):
+                                while((not successRecognition) and (recognitionFailed < 2)):
                                     result = take_pic.main() # Result of the image recognition
                                     
                                     # Task A.5
                                     if(result == 'bullseye'):
                                         fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
                                         for command in fixed_commands:
-                                            tmpMove, tmpVal1, tmpVal2 = translator.client2stmTranslate(command[0])
+                                            tmpMove, tmpVal1, tmpVal2 = translator.client2stmTranslate(command)
                                             
                                             # Turning command
                                             if(tmpVal2 is None):
@@ -120,8 +121,7 @@ def main():
                                                 myRobot.update_delta_straight(movement=tmpMove, distance=tmpVal2)
                                             
                                             command = usb.receive_stm_command()
-                                            if(command == STMEND):
-                                                bluetooth.send_command(command=myRobot.get_coords())
+                                            bluetooth.send_command(command=myRobot.get_coords())
                                                 
                                     # Target found!
                                     elif(result != "-1"):
@@ -133,15 +133,14 @@ def main():
                                         bluetooth.send_command(command=f"TARGET/{obs_counter + 1}/{result}")
                                         recognitionFailed += 1
                                         # correctional movements
-                                        if(recognitionFailed < 3):
+                                        if(recognitionFailed < 2):
                                             usb.send_stm_command_axis(move=2, x=0, y=-(10 * recognitionFailed))
                                             myRobot.update_delta_straight(movement=2, distance=(10 * recognitionFailed))
                                             
                                             command = usb.receive_stm_command()
-                                            if(command == STMEND):
-                                                bluetooth.send_command(command=myRobot.get_coords())
+                                            bluetooth.send_command(command=myRobot.get_coords())
                                 
-                                if(recognitionFailed == 3):
+                                if(recognitionFailed == 2):
                                     recognitionFailed -= 1
                                     
                                 for i in range(recognitionFailed, 0, -1):
@@ -149,8 +148,7 @@ def main():
                                     myRobot.update_delta_straight(movement=1, distance=(10 * i))
                                     
                                     command = usb.receive_stm_command()
-                                    if(command == STMEND):
-                                        bluetooth.send_command(command=myRobot.get_coords())
+                                    bluetooth.send_command(command=myRobot.get_coords())
                                 
                                 obs_counter += 1        
                                 break # Breaks out from the for loop and start from line 92
@@ -166,8 +164,7 @@ def main():
                                 myRobot.update_delta_straight(movement=move, distance=val2)
                             
                             command = usb.receive_stm_command()
-                            if(command == STMEND):
-                                bluetooth.send_command(command=myRobot.get_coords())
+                            bluetooth.send_command(command=myRobot.get_coords())
                                 
                 # Task 02
                 elif(task == "PATH"):
@@ -204,8 +201,7 @@ def main():
                     
                 command = usb.receive_stm_command()
                 print(command)
-                if(command == STMEND):
-                    bluetooth.send_command(command=myRobot.get_coords())
+                bluetooth.send_command(command=myRobot.get_coords())
 
             # Stop Instruction
             elif(instruction == "STOP"):
@@ -227,8 +223,7 @@ def main():
                     myRobot.update_delta_straight(move=2, distance=int(distance))
                 
                 command = usb.receive_stm_command()
-                if(command == STMEND):
-                    bluetooth.send_command(command=myRobot.get_coords())
+                bluetooth.send_command(command=myRobot.get_coords())
                     
             # Task A.4
             elif(instruction == "CUSTOMTURN"): # "CUSTOMMOVE/L/180"
@@ -255,8 +250,7 @@ def main():
                     myRobot.update_delta_turn(movement=6, angle=int(angle))
                 
                 command = usb.receive_stm_command()
-                if(command == STMEND):
-                    bluetooth.send_command(command=myRobot.get_coords())
+                bluetooth.send_command(command=myRobot.get_coords())
                     
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")

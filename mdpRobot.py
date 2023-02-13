@@ -13,6 +13,10 @@ class Robot:
         self.x = self.x + delta_x
         self.y = self.y + delta_y
         
+    def robot_pos(self, delta_x = 0, delta_y = 0):
+        self.x = delta_x
+        self.y = delta_y
+        
     def get_coords(self):
         return "ROBOT/{}/{}/{}".format(self.x, self.y, (self.orientation % 360))
     
