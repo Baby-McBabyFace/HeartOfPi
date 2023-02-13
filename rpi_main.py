@@ -86,7 +86,6 @@ def main():
                     # after this part, we will receive data from the client
                     # assuming data is in list format and returning [['w030'], ['e090'], ['w050'], ['d000'], ['p001']]
                     path = wifi.receive_data()
-                    path = str2list.convert(path)
                     obs_counter = 0
                     while True:
                         if(obs_counter == len(obstacles)):
@@ -161,7 +160,11 @@ def main():
                             
                             # Straight command
                             else:
-                                usb.send_stm_command_axis(move, val1, val2)
+                                if(move == 2):
+                                    usb.send_stm_command_axis(move, val1, -val2)
+                                else:
+                                    usb.send_stm_command_axis(move, val1, val2)
+
                                 myRobot.update_delta_straight(movement=move, distance=val2)
                             
                             command = usb.receive_stm_command()
@@ -171,8 +174,9 @@ def main():
                 elif(task == "PATH"):
                     # TODO send movement forward until STM reports to stop
                     # take photo
-                    # pc tells left or rogit
-                    # if left, 
+                    # pc tells left or right
+                    # if left, send left command, right send right command
+                    # Then after I receive a command from STM, will send a straight movement
                     print("TASK #02")
             
             # Manual Movements
@@ -205,7 +209,6 @@ def main():
                     myRobot.update_delta_turn(movement=6, angle=90)
                     
                 command = usb.receive_stm_command()
-                print(command)
                 bluetooth.send_command(command=myRobot.get_coords())
 
             # Stop Instruction
