@@ -86,12 +86,14 @@ def main():
                     # after this part, we will receive data from the client
                     # assuming data is in list format and returning [['w030'], ['e090'], ['w050'], ['d000'], ['p001']]
                     path = wifi.receive_data()
-                    obs_counter = 0
+                    
+                    obs_path = path.pop(0)
+                    
                     while True:
-                        if(obs_counter == len(obstacles)):
+                        if(len(obs_path) == 0):
                             break
                         
-                        bluetooth.send_command(command=f"STATUS/Looking for target {obs_counter+1}")
+                        bluetooth.send_command(command=f"STATUS/Looking for target {obs_path[0]}")
                         for i in range(len(path)):
                             movement = path.pop(0)
                             move, val1, val2 = translator.client2stmTranslate(movement)
@@ -101,36 +103,15 @@ def main():
                                 successRecognition = False
                                 recognitionFailed = 0
                                 while((not successRecognition) and (recognitionFailed < 2)):
-                                    result = take_pic.main() # Result of the image recognition
-                                    
-                                    # Task A.5
-                                    # separate this from task 01
-                                    if(result == 'bullseye'):
-                                        fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
-                                        for command in fixed_commands:
-                                            tmpMove, tmpVal1, tmpVal2 = translator.client2stmTranslate(command)
-                                            
-                                            # Turning command
-                                            if(tmpVal2 is None):
-                                                usb.send_stm_command_angle(tmpMove, tmpVal1)
-                                                myRobot.update_delta_turn(movement=tmpMove, angle=tmpVal1)
-
-                                            # Straight command
-                                            else:
-                                                usb.send_stm_command_axis(tmpMove, tmpVal1, tmpVal2)
-                                                myRobot.update_delta_straight(movement=tmpMove, distance=tmpVal2)
-                                            
-                                            command = usb.receive_stm_command()
-                                            bluetooth.send_command(command=myRobot.get_coords())
                                                 
                                     # Target found!
-                                    elif(result != "-1"):
+                                    if(result != "-1"):
                                         result = int(result)
-                                        bluetooth.send_command(command=f"TARGET/{obs_counter + 1}/{result}")
+                                        bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
                                         successRecognition = True # Mark as success
                                     
                                     else:
-                                        bluetooth.send_command(command=f"TARGET/{obs_counter + 1}/{result}")
+                                        bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
                                         recognitionFailed += 1
                                         # correctional movements
                                         if(recognitionFailed < 2):
@@ -150,7 +131,7 @@ def main():
                                     command = usb.receive_stm_command()
                                     bluetooth.send_command(command=myRobot.get_coords())
                                 
-                                obs_counter += 1        
+                                obs_path.pop(0)        
                                 break # Breaks out from the for loop and start from line 92
                             
                             # Turning command
@@ -173,11 +154,46 @@ def main():
                 # Task 02
                 elif(task == "PATH"):
                     # TODO send movement forward until STM reports to stop
-                    # take photo
-                    # pc tells left or right
-                    # if left, send left command, right send right command
-                    # Then after I receive a command from STM, will send a straight movement
-                    print("TASK #02")
+                    bluetooth.send_command(command="TASK #02")
+                    while(True):
+                        usb.send_stm_command_axis(move=1, x=0, y=10)
+                        myRobot.update_delta_straight(movement=1, distance=10)
+                        
+                        command = usb.receive_stm_command()
+                        
+                        if(command == "NEAR"):
+                            # take photo
+                            recognitionFailed = 0
+                            while(True and (recognitionFailed < 2)):
+                                result = take_pic.main() # Result of the image recognition
+                                
+                                if(result == "LEFT"):
+                                    # TODO: Send LEFT command
+                                    print(1)
+                                    break
+                                elif(result == "RIGHT"):
+                                    # TODO: Send RIGHT command
+                                    print(1)
+                                    break
+                                else:
+                                    recognitionFailed += 1
+                                    
+                                    if(recognitionFailed < 2):
+                                        usb.send_stm_command_axis(move=2, x=0, y=-(10 * recognitionFailed))
+                                        myRobot.update_delta_straight(movement=2, distance=(10 * recognitionFailed))
+                                        
+                                        command = usb.receive_stm_command()
+                                        bluetooth.send_command(command=myRobot.get_coords())
+                            
+                            if(recognitionFailed == 2):
+                                recognitionFailed -= 1
+                                
+                            for i in range(recognitionFailed, 0, -1):
+                                usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
+                                myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                                
+                                command = usb.receive_stm_command()
+                                bluetooth.send_command(command=myRobot.get_coords())
             
             # Manual Movements
             elif(instruction == "MOVE"):
@@ -259,7 +275,42 @@ def main():
                 
                 command = usb.receive_stm_command()
                 bluetooth.send_command(command=myRobot.get_coords())
+                
+            # Task A.5    
+            elif(instruction == "BULLSEYE"): # "BULLSEYE"
+                while(True):                
+                    result = take_pic.main() # Result of the image recognition
                     
+                    # Task A.5
+                    # separate this from task 01
+                    if(result == 'bullseye'):
+                        fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
+                        for command in fixed_commands:
+                            tmpMove, tmpVal1, tmpVal2 = translator.client2stmTranslate(command)
+                            
+                            # Turning command
+                            if(tmpVal2 is None):
+                                usb.send_stm_command_angle(tmpMove, tmpVal1)
+                                myRobot.update_delta_turn(movement=tmpMove, angle=tmpVal1)
+
+                            # Straight command
+                            else:
+                                if(tmpMove == 2):
+                                    usb.send_stm_command_axis(tmpMove, tmpVal1, -tmpVal2)
+                                else:
+                                    usb.send_stm_command_axis(tmpMove, tmpVal1, tmpVal2)
+                                myRobot.update_delta_straight(movement=tmpMove, distance=tmpVal2)
+                            
+                            command = usb.receive_stm_command()
+                            bluetooth.send_command(command=myRobot.get_coords())
+                    
+                    else:
+                        break
+                    
+                print("NO BULLSEYE")
+                command = usb.receive_stm_command()
+                bluetooth.send_command(command=myRobot.get_coords())
+                
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()

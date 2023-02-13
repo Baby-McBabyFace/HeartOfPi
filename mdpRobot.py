@@ -18,7 +18,7 @@ class Robot:
         self.y = delta_y
         
     def get_coords(self):
-        return "ROBOT/{}/{}/{}".format(self.x, self.y, (self.orientation % 360))
+        return "ROBOT/{}/{}/{}".format(int(self.x), int(self.y), int(self.orientation % 360))
     
     def update_delta_straight(self, movement, distance):
         if(movement == 1):
