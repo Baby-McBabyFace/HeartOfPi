@@ -27,6 +27,11 @@ class Serial:
         print(f"Sending to STM: {command}")
         self.ser.write(command)
 
+    def send_stm_command_task02(self, move):
+        command = struct.pack('>b', move)
+        print(f"Sending to STM: {command}")
+        self.ser.write(command)
+
     def receive_stm_command(self):
         command = self.ser.readline().decode().strip()
         print(f"Received from STM: {command}")

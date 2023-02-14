@@ -155,46 +155,58 @@ def main():
                 elif(task == "PATH"):
                     # TODO send movement forward until STM reports to stop
                     bluetooth.send_command(command="TASK #02")
-                    while(True):
-                        usb.send_stm_command_axis(move=1, x=0, y=10)
-                        myRobot.update_delta_straight(movement=1, distance=10)
-                        
-                        command = usb.receive_stm_command()
-                        
-                        if(command == "NEAR"):
-                            # take photo
-                            recognitionFailed = 0
-                            while(True and (recognitionFailed < 2)):
-                                result = take_pic.main() # Result of the image recognition
-                                
-                                if(result == "LEFT"):
-                                    # TODO: Send LEFT command
-                                    print(1)
-                                    break
-                                elif(result == "RIGHT"):
-                                    # TODO: Send RIGHT command
-                                    print(1)
-                                    break
-                                else:
-                                    recognitionFailed += 1
-                                    
-                                    if(recognitionFailed < 2):
-                                        usb.send_stm_command_axis(move=2, x=0, y=-(10 * recognitionFailed))
-                                        myRobot.update_delta_straight(movement=2, distance=(10 * recognitionFailed))
-                                        
-                                        command = usb.receive_stm_command()
-                                        bluetooth.send_command(command=myRobot.get_coords())
+                    usb.send_stm_command_task02(move=10)
+                    command = usb.receive_stm_command()
+                    
+                    obs_counter = 0
+                    while(obs_counter != 2):
+                        # take photo
+                        recognitionFailed = 0
+                        while(True and (recognitionFailed < 2)):
+                            result = take_pic.main() # Result of the image recognition
                             
-                            if(recognitionFailed == 2):
-                                recognitionFailed -= 1
-                                
-                            for i in range(recognitionFailed, 0, -1):
-                                usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
-                                myRobot.update_delta_straight(movement=1, distance=(10 * i))
-                                
+                            if(result == "LEFT"):
+                                # TODO: Send LEFT command
+                                usb.send_stm_command_task02(move=11)
                                 command = usb.receive_stm_command()
-                                bluetooth.send_command(command=myRobot.get_coords())
-            
+                                
+                                if(obs_counter < 1):
+                                    usb.send_stm_command_task02(move=10)
+                                    command = usb.receive_stm_command()
+                                    
+                                break
+                            elif(result == "RIGHT"):
+                                # TODO: Send RIGHT command
+                                usb.send_stm_command_task02(move=12)
+                                command = usb.receive_stm_command()
+                                
+                                if(obs_counter < 1):
+                                    usb.send_stm_command_task02(move=10)
+                                    command = usb.receive_stm_command()
+                                    
+                                break
+                            else:
+                                recognitionFailed += 1
+                                
+                                if(recognitionFailed < 2):
+                                    usb.send_stm_command_axis(move=2, x=0, y=-(10 * recognitionFailed))
+                                    myRobot.update_delta_straight(movement=2, distance=(10 * recognitionFailed))
+                                    
+                                    command = usb.receive_stm_command()
+                                    bluetooth.send_command(command=myRobot.get_coords())
+                        
+                        if(recognitionFailed == 2):
+                            recognitionFailed -= 1
+                            
+                        for i in range(recognitionFailed, 0, -1):
+                            usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
+                            myRobot.update_delta_straight(movement=1, distance=(10 * i))
+
+                        obs_counter += 1
+                    
+                    # Fianl command to send
+                    usb.send_stm_command_task02(move=13)
+                       
             # Manual Movements
             elif(instruction == "MOVE"):
                 direction = command.pop(0)
