@@ -106,7 +106,6 @@ def main():
                                                 
                                     # Target found!
                                     if(result != "-1"):
-                                        result = int(result)
                                         bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
                                         successRecognition = True # Mark as success
                                     
@@ -153,7 +152,6 @@ def main():
                                 
                 # Task 02
                 elif(task == "PATH"):
-                    # TODO send movement forward until STM reports to stop
                     bluetooth.send_command(command="TASK #02")
                     usb.send_stm_command_task02(move=10)
                     command = usb.receive_stm_command()
@@ -166,7 +164,6 @@ def main():
                             result = take_pic.main() # Result of the image recognition
                             
                             if(result == "LEFT"):
-                                # TODO: Send LEFT command
                                 usb.send_stm_command_task02(move=11)
                                 command = usb.receive_stm_command()
                                 
@@ -176,7 +173,6 @@ def main():
                                     
                                 break
                             elif(result == "RIGHT"):
-                                # TODO: Send RIGHT command
                                 usb.send_stm_command_task02(move=12)
                                 command = usb.receive_stm_command()
                                 
