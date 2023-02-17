@@ -36,12 +36,12 @@ def estUSB():
 def estWifi(host, port):
     while(True):
         try:
-            print("Establishing Server on Raspberry Pi")
+            print("Establishing connection with Laptop")
             wifi = wlan.Wlan(host=host, port=port)
-            wifi.start_server()
+            wifi.start_client()
             return wifi
         except Exception as e:
-            print("Server unable to be established")
+            print("Unable to establish connection with Server")
             time.sleep(5)
         
 def main():
@@ -50,8 +50,8 @@ def main():
         config = configparser.ConfigParser()
         config.read("config.ini")
         
-        host = config.get("variables", "RPI_HOST")
-        port = int(config.get("variables", "RPI_PORT"))
+        host = config.get("variables", "LAPTOP_HOST")
+        port = int(config.get("variables", "LAPTOP_PORT"))
         
         # Object declarations
         myRobot = mdpRobot.Robot()
