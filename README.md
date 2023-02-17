@@ -50,7 +50,7 @@ These are the requirements needed from the respective devices in order to use th
     10-byte data with 0x01 or 0x02 at 1st byte  # Sends to tell Microcontroller to move forward/backwards, with x-axis and y-axis encoded
 
     # E.G., \0x03\0x00\0x00\0x00\0x5A\0x00\ (Turn left 90 degree)
-    6-byte data with 0x03 - 0x06 at 1st byte  # Sends to tell Microcontroller to rotate, with angle encoded
+    6-byte data with 0x03 - 0x06 at 1st byte    # Sends to tell Microcontroller to rotate, with angle encoded
 
 ### Server:
     
