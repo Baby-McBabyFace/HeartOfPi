@@ -7,7 +7,7 @@ import time
 from picamera import PiCamera
 
 # --- constants ---
-HOST = '192.168.16.28'   # (local or external) address IP of remote server
+HOST = '192.168.16.34'   # (local or external) address IP of remote server
 PORT = 5001 # (local or external) port of remote server
 
 def sendImgToPC(filename):
