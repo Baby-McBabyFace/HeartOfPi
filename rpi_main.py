@@ -92,7 +92,7 @@ def main():
                     while True:
                         if(len(obs_path) == 0):
                             break
-                        
+                        time.sleep(0.1)
                         bluetooth.send_command(command=f"STATUS/Looking for target {obs_path[0]}")
                         for i in range(len(path)):
                             movement = path.pop(0)
@@ -103,7 +103,7 @@ def main():
                                 successRecognition = False
                                 recognitionFailed = 0
                                 while((not successRecognition) and (recognitionFailed < 2)):
-                                                
+                                    result = take_pic.main()
                                     # Target found!
                                     if(result != "-1"):
                                         bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
@@ -149,6 +149,7 @@ def main():
                             
                             command = usb.receive_stm_command()
                             bluetooth.send_command(command=myRobot.get_coords())
+                    bluetooth.send_command(command="FINISH/EXPLORE")
                                 
                 # Task 02
                 elif(task == "PATH"):
@@ -202,6 +203,7 @@ def main():
                     
                     # Fianl command to send
                     usb.send_stm_command_task02(move=13)
+                    bluetooth.send_command(command="FINISH/PATH")
                        
             # Manual Movements
             elif(instruction == "MOVE"):
@@ -292,7 +294,7 @@ def main():
                     # Task A.5
                     # separate this from task 01
                     if(result == 'bullseye'):
-                        fixed_commands = ["a090", "w060", "q090", "w025", "q090"]
+                        fixed_commands = ["a090", "w060", "q090", "q090"] #[-2] w010
                         for command in fixed_commands:
                             tmpMove, tmpVal1, tmpVal2 = translator.client2stmTranslate(command)
                             
@@ -318,6 +320,7 @@ def main():
                 print("NO BULLSEYE")
                 command = usb.receive_stm_command()
                 bluetooth.send_command(command=myRobot.get_coords())
+                break
                 
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")

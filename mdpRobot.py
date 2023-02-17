@@ -1,5 +1,5 @@
 class Robot:
-    def __init__(self, x=0, y=0, orientation=720):
+    def __init__(self, x=0, y=19, orientation=720):
         self.x = x
         self.y = y
         self.orientation = orientation
@@ -11,7 +11,7 @@ class Robot:
     
     def delta(self, delta_x = 0, delta_y = 0):
         self.x = self.x + delta_x
-        self.y = self.y + delta_y
+        self.y = self.y - delta_y
         
     def robot_pos(self, delta_x = 0, delta_y = 0):
         self.x = delta_x
@@ -50,7 +50,7 @@ class Robot:
                 self.delta(delta_x=3, delta_y=-3)
             elif(self.orientation % 360 == 270):
                 self.delta(delta_x=3, delta_y=3)                
-            self.orientation -= angle
+            self.orientation += angle
         elif(movement == 4): # RIGHT
             if(self.orientation % 360 == 0):
                 self.delta(delta_x=3, delta_y=3)
@@ -60,7 +60,7 @@ class Robot:
                 self.delta(delta_x=-3, delta_y=-3)
             elif(self.orientation % 360 == 270):
                 self.delta(delta_x=3, delta_y=-3)
-            self.orientation += angle
+            self.orientation -= angle
         elif(movement == 5): # R LEFT
             if(self.orientation % 360 == 0):
                 self.delta(delta_x=-3, delta_y=-3)
@@ -70,7 +70,7 @@ class Robot:
                 self.delta(delta_x=3, delta_y=3)
             elif(self.orientation % 360 == 270):
                 self.delta(delta_x=-3, delta_y=3)
-            self.orientation += angle
+            self.orientation -= angle
         elif(movement == 6): # R RIGHT
             if(self.orientation % 360 == 0):
                 self.delta(delta_x=3, delta_y=-3)
@@ -80,4 +80,4 @@ class Robot:
                 self.delta(delta_x=-3, delta_y=3)
             elif(self.orientation % 360 == 270):
                 self.delta(delta_x=-3, delta_y=-3)
-            self.orientation -= angle
+            self.orientation += angle
