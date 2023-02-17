@@ -20,7 +20,7 @@ class Wlan:
     
     def start_client(self):
         # Wait for the PC to connect to the RPi.
-        print("Connection on {}:{}...".format(self.host, self.port))
+        print("Connecting to {}:{}...".format(self.host, self.port))
         
         try:
             self.client.connect()
@@ -30,7 +30,7 @@ class Wlan:
             sys.exit(1)
             return 0
             
-        print("Connection from {}:{} established!\n".format(self.host, self.port))
+        print("Connection to {}:{} established!\n".format(self.host, self.port))
     
     def receive_data(self):        
         print("Waiting to receive data...")
