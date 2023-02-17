@@ -203,6 +203,7 @@ def main():
                     
                     # Fianl command to send
                     usb.send_stm_command_task02(move=13)
+                    command = usb.receive_stm_command()
                     bluetooth.send_command(command="FINISH/PATH")
                        
             # Manual Movements
