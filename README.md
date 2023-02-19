@@ -37,6 +37,7 @@ These are the requirements needed from the respective devices in order to use th
     FINISH/PATH                 # Sends after Task #02
     ROBOT/{X}/{Y}/{ORI}         # Sends the x-axis, y-axis, and orientation of the robot after each move.
     TARGET/{idx}/{result}       # Sends the Target ID with its corresponding image encoded value
+    STOP                        # Stops all movement (not implemented yet)
 
 ### USB Serial:
     
