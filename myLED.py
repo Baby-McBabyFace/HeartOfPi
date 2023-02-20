@@ -5,14 +5,17 @@ import time
 class myLED:
     def __init__(self, gpioPin):
         self.gpioPin = gpioPin
-        gpio.setmode(GPIO.BCM)
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.gpioPin, GPIO.OUT)
+        self.pwm = GPIO.PWM(self.gpioPin, 100)
 
     def up(self):
-        GPIO.output(self.gpioPin, GPIO.HIGH)
+        # GPIO.output(self.gpioPin, GPIO.HIGH)
+        self.pwm.start(1)
         
     def down(self):
-        GPIO.output(self.gpioPin, GPIO.LOW)
+        # GPIO.output(self.gpioPin, GPIO.LOW)
+        self.pwm.stop()
         
     def blink(self):
         self.up()
@@ -24,4 +27,5 @@ class myLED:
             self.up()
             time.sleep(0.1)
             self.down
-        
+    def close(self):
+        GPIO.cleanup()

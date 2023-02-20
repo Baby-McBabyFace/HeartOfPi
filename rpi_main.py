@@ -364,7 +364,9 @@ def main():
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
         usb.close()
-        wifi.close()
+        # wifi.close()
+        green.close()
+        red.close()
 
     except Exception as e:
         print("ERROR")
@@ -372,7 +374,9 @@ def main():
         print("Closing all connections")
         bluetooth.close()
         usb.close()
-        wifi.close()
+        # wifi.close()
+        green.close()
+        red.close()
     
 if __name__ == '__main__':
     while(True):
