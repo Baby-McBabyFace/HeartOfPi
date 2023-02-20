@@ -10,6 +10,7 @@ import translator
 import take_pic
 import subprocess
 import random
+import myLED
 
 def estBluetooth():
     while(True):
@@ -62,6 +63,8 @@ def main():
         myRobot = mdpRobot.Robot()
         bluetooth = estBluetooth() 
         usb = estUSB() 
+        green = myLED.myLED(23)
+        red = myLED.myLED(24)
         # wifi = estWifi(host=host, port=port)
         
         # String to listen for when STM finishes command
@@ -70,8 +73,11 @@ def main():
         # obstacles = [[135, 25, 0, 1], [55, 75, -90, 2], [195, 95, 180, 3], [175, 185, -90, 4], [75, 125, 90, 5], [15, 185, -90, 6]]
         obstacles = []
         while True:
+            green.up()
             bluetooth.send_command(command="STATUS/Ready to start")
             command = bluetooth.receive_command()   # Listening for Bluetooth Commands
+            green.down()
+            red.up()
             command = command.split('/')
             instruction = command.pop(0)
             
@@ -352,7 +358,8 @@ def main():
                 command = usb.receive_stm_command()
                 bluetooth.send_command(command=myRobot.get_coords())
                 break
-                
+            
+            red.down()
     except KeyboardInterrupt:
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()

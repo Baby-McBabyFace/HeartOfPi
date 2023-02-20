@@ -14,3 +14,14 @@ class myLED:
     def down(self):
         GPIO.output(self.gpioPin, GPIO.LOW)
         
+    def blink(self):
+        self.up()
+        time.sleep(1)
+        self.down()
+        
+    def turning(self):
+        for i in range(3):
+            self.up()
+            time.sleep(0.1)
+            self.down
+        
