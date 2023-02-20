@@ -62,7 +62,7 @@ def main():
         myRobot = mdpRobot.Robot()
         bluetooth = estBluetooth() 
         usb = estUSB() 
-        wifi = estWifi(host=host, port=port)
+        # wifi = estWifi(host=host, port=port)
         
         # String to listen for when STM finishes command
         STMEND = "Movement Done!" 
@@ -159,7 +159,7 @@ def main():
                 # Task 02
                 elif(task == "PATH"):
                     bluetooth.send_command(command="TASK #02")
-                    usb.send_stm_command_task02(move=str(10))
+                    usb.send_stm_command_axis(10,0,0)
                     command = usb.receive_stm_command()
                     
                     obs_counter = 0
@@ -177,10 +177,10 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=str(11))
+                                    usb.send_stm_command_axis(11,0,0)
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(move=str(13))
+                                    usb.send_stm_command_task02(13,0,0)
                                     command = usb.receive_stm_command()
                                 
                                 # if(obs_counter < 1):
@@ -196,10 +196,10 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=str(12))
+                                    usb.send_stm_command_axis(12,0,0)
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(move=str(14))
+                                    usb.send_stm_command_axis(14,0,0)
                                     command = usb.receive_stm_command()
                                 
                                 # if(obs_counter < 1):
@@ -224,10 +224,10 @@ def main():
                             myRobot.update_delta_straight(movement=1, distance=(10 * i))
                             
                             if(obs_counter == 0):
-                                usb.send_stm_command_task02(move=str(random.randint(11,12)))
+                                usb.send_stm_command_axis(random.randint(11,12),0,0)
                             
                             elif(obs_counter == 1):
-                                usb.send_stm_command_task02(move=str(random.randint(13,14)))
+                                usb.send_stm_command_axis(random.randint(13,14),0,0)
                             
 
                         obs_counter += 1
