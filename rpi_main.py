@@ -39,8 +39,12 @@ def estWifi(host, port):
         try:
             print("Establishing connection with Laptop")
             wifi = wlan.Wlan(host=host, port=port)
-            wifi.start_client()
-            return wifi
+            result = wifi.start_client()
+            if(result != 0):
+                return wifi
+            else:
+                print("Reconnecting to Server")
+                time.sleep(5) 
         except Exception as e:
             print("Unable to establish connection with Server")
             time.sleep(5)

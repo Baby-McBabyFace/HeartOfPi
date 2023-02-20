@@ -26,6 +26,7 @@ class Wlan:
             self.client.connect()
         except Exception as e:
             print(e)
+            return 0
             
         print("Connection to {}:{} established!\n".format(self.host, self.port))
     
