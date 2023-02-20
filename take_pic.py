@@ -3,11 +3,15 @@ import socket
 import sys
 import threading
 import time
+import configparser
 
 from picamera import PiCamera
 
+config = configparser.ConfigParser()
+config.read("config.ini")
+
 # --- constants ---
-HOST = '192.168.16.34'   # (local or external) address IP of remote server
+HOST = config.get("variables", "LAPTOP_HOST")   # (local or external) address IP of remote server
 PORT = 5001 # (local or external) port of remote server
 
 def sendImgToPC(filename):
