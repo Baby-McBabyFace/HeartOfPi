@@ -159,7 +159,7 @@ def main():
                 # Task 02
                 elif(task == "PATH"):
                     bluetooth.send_command(command="TASK #02")
-                    usb.send_stm_command_task02(move=10)
+                    usb.send_stm_command_task02(move=str(10))
                     command = usb.receive_stm_command()
                     
                     obs_counter = 0
@@ -177,10 +177,10 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=11)
+                                    usb.send_stm_command_task02(move=str(11))
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(move=13)
+                                    usb.send_stm_command_task02(move=str(13))
                                     command = usb.receive_stm_command()
                                 
                                 # if(obs_counter < 1):
@@ -196,10 +196,10 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=12)
+                                    usb.send_stm_command_task02(move=str(12))
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(move=14)
+                                    usb.send_stm_command_task02(move=str(14))
                                     command = usb.receive_stm_command()
                                 
                                 # if(obs_counter < 1):
@@ -224,10 +224,10 @@ def main():
                             myRobot.update_delta_straight(movement=1, distance=(10 * i))
                             
                             if(obs_counter == 0):
-                                usb.send_stm_command_task02(move=(random.randint(11,12)))
+                                usb.send_stm_command_task02(move=str(random.randint(11,12)))
                             
                             elif(obs_counter == 1):
-                                usb.send_stm_command_task02(move=(random.randint(13,14)))
+                                usb.send_stm_command_task02(move=str(random.randint(13,14)))
                             
 
                         obs_counter += 1
