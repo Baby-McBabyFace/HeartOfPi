@@ -9,6 +9,7 @@ import mdpRobot
 import translator
 import take_pic
 import subprocess
+import random
 
 def estBluetooth():
     while(True):
@@ -164,22 +165,42 @@ def main():
                         while(True and (recognitionFailed < 2)):
                             result = take_pic.main() # Result of the image recognition
                             
-                            if(result == "LEFT"):
-                                usb.send_stm_command_task02(move=11)
-                                command = usb.receive_stm_command()
+                            if(result == "38"):
+                                for i in range(recognitionFailed, 0, -1):
+                                    usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
+                                    myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                                
+                                recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=10)
+                                    usb.send_stm_command_task02(move=11)
                                     command = usb.receive_stm_command()
+                                elif(obs_counter < 2):
+                                    usb.send_stm_command_task02(move=13)
+                                    command = usb.receive_stm_command()
+                                
+                                # if(obs_counter < 1):
+                                #     usb.send_stm_command_task02(move=10)
+                                #     command = usb.receive_stm_command()
                                     
                                 break
-                            elif(result == "RIGHT"):
-                                usb.send_stm_command_task02(move=12)
-                                command = usb.receive_stm_command()
+                            elif(result == "39"):
+                                for i in range(recognitionFailed, 0, -1):
+                                    usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
+                                    myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                                
+                                recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_task02(move=10)
+                                    usb.send_stm_command_task02(move=12)
                                     command = usb.receive_stm_command()
+                                elif(obs_counter < 2):
+                                    usb.send_stm_command_task02(move=14)
+                                    command = usb.receive_stm_command()
+                                
+                                # if(obs_counter < 1):
+                                #     usb.send_stm_command_task02(move=10)
+                                #     command = usb.receive_stm_command()
                                     
                                 break
                             else:
@@ -190,7 +211,6 @@ def main():
                                     myRobot.update_delta_straight(movement=2, distance=(10 * recognitionFailed))
                                     
                                     command = usb.receive_stm_command()
-                                    bluetooth.send_command(command=myRobot.get_coords())
                         
                         if(recognitionFailed == 2):
                             recognitionFailed -= 1
@@ -198,11 +218,17 @@ def main():
                         for i in range(recognitionFailed, 0, -1):
                             usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
                             myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                            
+                            if(obs_counter == 0):
+                                usb.send_stm_command_task02(move=(random.randint(11,12)))
+                            
+                            elif(obs_counter == 1):
+                                usb.send_stm_command_task02(move=(random.randint(13,14)))
+                            
 
                         obs_counter += 1
                     
-                    # Fianl command to send
-                    usb.send_stm_command_task02(move=13)
+                    # Fianl command to receive
                     command = usb.receive_stm_command()
                     bluetooth.send_command(command="FINISH/PATH")
                        
