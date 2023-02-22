@@ -1,5 +1,6 @@
 import serial
 import struct
+import myLED
 
 class Serial:
     def __init__(self, interface, baud=9600):
@@ -17,7 +18,7 @@ class Serial:
         print(f"Received from BT: {command}")
         return command
     
-    def send_stm_command_axis(self, move, x, y):
+    def send_stm_command_axis(self, move, x=0, y=0):
         command = struct.pack('>biib', move, x, y, 0)
         print(f"Sending to STM: {command}")
         self.ser.write(command)
@@ -26,6 +27,7 @@ class Serial:
         command = struct.pack('>bib', move, angle, 0)
         print(f"Sending to STM: {command}")
         self.ser.write(command)
+        myLED.myLED.blinkers()
 
     def receive_stm_command(self):
         command = self.ser.readline().decode().strip()

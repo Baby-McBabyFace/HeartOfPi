@@ -1,5 +1,10 @@
-# HeartOfPi
-Interface for communication between Bluetooth Serial, USB Serial, and Server
+# ❤️ HeartOfPi ❤️
+
+## About
+Interface for communication between Bluetooth Serial, USB Serial, and Server.
+
+#### Why the name
+The Raspberry Pi gives life to the robot by interfacing between different devices, allowing it to move. Why not call it the brain? Cause it doesn't sound as cool as HeartOfPi
 
 ## Installation Guide
 This is the steps that I took to get everything working. Note: You can use the monitor/keyboard/mouse that the lab provides but I feel it's unnecessary as everything can be done remotely so why not
@@ -9,11 +14,14 @@ This is the steps that I took to get everything working. Note: You can use the m
 3) Use an imager tool from your respective OSes to flash the `.img` file onto the SD card. In my case, I used `dd` to image the SD card.
 
         sudo dd if=2022-09-22-raspios-bullseye-armhf.img of=/dev/mmcblk0 bs=4M conv=fsync status=progress
-4) After imaging, the SD card will have 2 partitions
+4) After imaging, the SD card will have 2 partitions (WinOS users will not see rootfs. Do use MacOS or Linux in this step)
 
         rootfs
         boot
-5) Drag the following folders into the 2 partitions
+5) Drag the following files into the 2 partitions
+
+    Note: DO NOT BLINDLY RUN `first.sh` AND `second.sh`. **LOOK THROUGH BEFORE RUNNING**  
+    Reference for `userconf` and `wpa_supplicant.conf` is available on Raspberry Pi's own [Documentation](https://github.com/raspberrypi/documentation/blob/develop/documentation/asciidoc/computers/configuration/headless.adoc)
 
         rootfs/home/pi
             - first.sh                  # Script for setup. EDIT THE TEAM NUMBER AND IP ADDRESSES BEFORE RUNNING THIS SCRIPT.
@@ -21,11 +29,38 @@ This is the steps that I took to get everything working. Note: You can use the m
             - wallpaper.png             # Very important to have shrek as our team's lucky charm
         boot
             - SSH                       # Leave this as an empty file. Needed to enable SSH at first boot
-            - userconf                  # Configured with user:pass as pi:raspberry
-            - wpa_supplicant.conf       # EDIT YOUR SSID AND PSK INTO THIS FOLDER
+            - userconf                  # Configured with user:pass as pi:raspberry.
+            - wpa_supplicant.conf       # EDIT YOUR SSID AND PSK INTO THIS FILE
 6) Remove the SD card from your workstation and insert it into the Raspberry Pi
 7) Power up the Raspberry Pi
-8) WIP
+8) Find the IP address of the Raspberry Pi. I used `nmap` to find the IP address
+
+        sudo nmap -sn <IP-ADDR>/<CIDR>
+9) SSH into the Raspberry Pi with username `pi` and password `raspberry`
+
+        ssh pi@<IP-ADDR>
+10) After logging in, execute `first.sh` to set up all the dependencies. The script will reboot the Raspberry Pi automatically. Beware that `sudo apt update && sudo apt upgrade -y` will take a long time.
+
+        sudo chmod +x first.sh second.sh    # You may need to execute this command to allow execution for first.sh and second.sh
+        ./first.sh
+11) Once the Raspberry Pi reboots, you are able to access the Raspberry Pi using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/). Enter the static IP address of Raspberry Pi (set inside `first.sh`) and connect using the username and password mentioned above
+12) Execute `second.sh`. PLEASE INSTALL ALL DEPENDENCIES BEFORE DOING THIS AS YOU WILL NEED AN ETHERNET CABLE AFTER RUNNING THIS SCRIPT TO INSTALL ANYTHING FROM THE INTERNET
+
+        ./second.sh
+13) After the Raspberry Pi reboots after the execution of `second.sh`, you should be able to see the AP and Bluetooth set up.
+
+## Quality of Life
+I have included functions that may/may not improve usability of the Raspberry Pi
+
+| Service     | Port        | Function        |
+| ----------- | ----------- | ----------- |
+| SSH | 22 | For headless opeartions |
+| VNC | 5900 | For GUI without connecting to a physical display |
+| Samba | 445 | File sharing, easy to drag/drop files onto the Raspberry Pi|
+| HTTP | 80 | For Checklist |
+| figlet | - | ASCII art for terminal, just for the coolness factor |
+
+Also, `first.sh` and `second.sh` scripts are a QoL on its own. If you screw up your Raspberry Pi OS and want a clean slate, you can start from scratch without manually doing the setup :)
 
 ## Functions
 The main functions for each file are:
@@ -38,6 +73,7 @@ The main functions for each file are:
     take_pic.py     # Function to capture image on the Raspberry Pi and transmit it to a server for image processing
     translator.py   # Function to translate data between Bluetooth Device, Microcontroller, and Server
     wlan.py         # Function to send/receive data via sockets (using client.py)
+    myLED.py        # Control GPIO LEDs. This is a for fun feature and is NOT NEEDED
 
 ## Requirements from different devices
 These are the requirements needed from the respective devices in order to use this interface:
@@ -54,7 +90,7 @@ These are the requirements needed from the respective devices in order to use th
     MOVE/{DIR}                  # Module listens to this command to move in the direction that is in the command 
     CUSTOMMOVE/{DIR}/{DIST}     # Module listens to this command to move in STRAIGHT direction with a custom distance
     CUSTOMTURN/{DIR}/{DEG}      # Module listens to this command to ROTATE with a custom angle
-    BULLSEYE                    # Module listens to this command to start Task #01
+    BULLSEYE                    # Module listens to this command to clear checklist A.5
 
     To Receive:
     ---------------
@@ -89,7 +125,7 @@ These are the requirements needed from the respective devices in order to use th
     ---------------
     [[85, 95, 90, 1], [125, 135, -90, 2]]       # Sends to the server for the server to compute the path
 
-## Example of how it works
+## Example of how it works (Long read, but important)
 1) The module will start by checking whether the following connections are up  
 a. Bluetooth Serial  
 b. USB Serial  

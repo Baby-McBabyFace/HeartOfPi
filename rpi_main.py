@@ -63,9 +63,9 @@ def main():
         myRobot = mdpRobot.Robot()
         bluetooth = estBluetooth() 
         usb = estUSB() 
-        green = myLED.myLED(23)
-        red = myLED.myLED(24)
-        # wifi = estWifi(host=host, port=port)
+        green = myLED.myLED(gpioPin=23, power=1)
+        red = myLED.myLED(gpioPin=24, power=10)
+        wifi = estWifi(host=host, port=port)
         
         # String to listen for when STM finishes command
         STMEND = "Movement Done!" 
@@ -165,7 +165,7 @@ def main():
                 # Task 02
                 elif(task == "PATH"):
                     bluetooth.send_command(command="TASK #02")
-                    usb.send_stm_command_axis(10,0,0)
+                    usb.send_stm_command_axis(move=10)
                     command = usb.receive_stm_command()
                     
                     obs_counter = 0
@@ -183,17 +183,14 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_axis(11,0,0)
+                                    usb.send_stm_command_axis(move=11)
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(13,0,0)
+                                    usb.send_stm_command_task02(move=13)
                                     command = usb.receive_stm_command()
                                 
-                                # if(obs_counter < 1):
-                                #     usb.send_stm_command_task02(move=10)
-                                #     command = usb.receive_stm_command()
-                                    
                                 break
+                            
                             elif(result == "39"):
                                 for i in range(recognitionFailed, 0, -1):
                                     usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
@@ -202,10 +199,10 @@ def main():
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
-                                    usb.send_stm_command_axis(12,0,0)
+                                    usb.send_stm_command_axis(move=12)
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_axis(14,0,0)
+                                    usb.send_stm_command_axis(move=14)
                                     command = usb.receive_stm_command()
                                 
                                 # if(obs_counter < 1):
@@ -230,12 +227,11 @@ def main():
                             myRobot.update_delta_straight(movement=1, distance=(10 * i))
                             
                             if(obs_counter == 0):
-                                usb.send_stm_command_axis(random.randint(11,12),0,0)
+                                usb.send_stm_command_axis(move=random.randint(11,12))
                             
                             elif(obs_counter == 1):
-                                usb.send_stm_command_axis(random.randint(13,14),0,0)
+                                usb.send_stm_command_axis(move=random.randint(13,14))
                             
-
                         obs_counter += 1
                     
                     # Fianl command to receive
@@ -364,9 +360,8 @@ def main():
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
         usb.close()
-        # wifi.close()
-        green.close()
-        red.close()
+        wifi.close()
+        myLED.myLED.close()
 
     except Exception as e:
         print("ERROR")
@@ -374,9 +369,8 @@ def main():
         print("Closing all connections")
         bluetooth.close()
         usb.close()
-        # wifi.close()
-        green.close()
-        red.close()
+        wifi.close()
+        myLED.myLED.close()
     
 if __name__ == '__main__':
     while(True):
