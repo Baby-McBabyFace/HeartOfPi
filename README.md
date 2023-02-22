@@ -1,6 +1,32 @@
 # HeartOfPi
 Interface for communication between Bluetooth Serial, USB Serial, and Server
 
+## Installation Guide
+This is the steps that I took to get everything working. Note: You can use the monitor/keyboard/mouse that the lab provides but I feel it's unnecessary as everything can be done remotely so why not
+
+1) Download the latest 32-bit (picamera does not work on 64-bit) version of Raspberry Pi OS from [Raspberry Pi Website](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit). In my case, I downloaded `2022-09-22-raspios-bullseye-armhf.img.xz`  
+2) Extract the `.img.xz` file from the archive that you've downloaded to obtain the `.img` file  
+3) Use an imager tool from your respective OSes to flash the `.img` file onto the SD card. In my case, I used `dd` to image the SD card.
+
+        sudo dd if=2022-09-22-raspios-bullseye-armhf.img of=/dev/mmcblk0 bs=4M conv=fsync status=progress
+4) After imaging, the SD card will have 2 partitions
+
+        rootfs
+        boot
+5) Drag the following folders into the 2 partitions
+
+        rootfs/home/pi
+            - first.sh                  # Script for setup. EDIT THE TEAM NUMBER AND IP ADDRESSES BEFORE RUNNING THIS SCRIPT.
+            - second.sh                 # Script for setup. EDIT THE DHCP IP ADDRESSES BEFORE RUNNING THIS SCRIPT. BEWARE THAT THIS SCRIPT WILL ENABLE AP MODE FOR RASPBERRY PI AND THIS WILL DISABLE THE ONBOARD WIFI.
+            - wallpaper.png             # Very important to have shrek as our team's lucky charm
+        boot
+            - SSH                       # Leave this as an empty file. Needed to enable SSH at first boot
+            - userconf                  # Configured with user:pass as pi:raspberry
+            - wpa_supplicant.conf       # EDIT YOUR SSID AND PSK INTO THIS FOLDER
+6) Remove the SD card from your workstation and insert it into the Raspberry Pi
+7) Power up the Raspberry Pi
+8) WIP
+
 ## Functions
 The main functions for each file are:
 
