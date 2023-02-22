@@ -11,7 +11,7 @@ This is the steps that I took to get everything working. Note: You can use the m
 
 1) Download the latest 32-bit (picamera does not work on 64-bit) version of Raspberry Pi OS from [Raspberry Pi Website](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit). In my case, I downloaded `2022-09-22-raspios-bullseye-armhf.img.xz`  
 2) Extract the `.img.xz` file from the archive that you've downloaded to obtain the `.img` file  
-3) Use an imager tool from your respective OSes to flash the `.img` file onto the SD card. In my case, I used `dd` to image the SD card.
+3) Use an imager tool from your respective OSes to flash the `.img` file onto the SD card. In my case, I use Linux (not arch btw) so I used `dd` to image the SD card.
 
         sudo dd if=2022-09-22-raspios-bullseye-armhf.img of=/dev/mmcblk0 bs=4M conv=fsync status=progress
 4) After imaging, the SD card will have 2 partitions (WinOS users will not see rootfs. Do use MacOS or Linux in this step)
