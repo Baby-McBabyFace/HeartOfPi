@@ -43,11 +43,11 @@ This is the steps that I took to get everything working. Note: You can use the m
 
         sudo chmod +x first.sh second.sh    # You may need to execute this command to allow execution for first.sh and second.sh
         ./first.sh
-11) Once the Raspberry Pi reboots, you are able to access the Raspberry Pi using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/). Enter the static IP address of Raspberry Pi (set inside `first.sh`) and connect using the username and password mentioned above
+11) Once the Raspberry Pi reboots, you are able to access the Raspberry Pi using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/). Enter the IP address of Raspberry Pi and connect using the username and password mentioned above
 12) Execute `second.sh`. PLEASE INSTALL ALL DEPENDENCIES BEFORE DOING THIS AS YOU WILL NEED AN ETHERNET CABLE AFTER RUNNING THIS SCRIPT TO INSTALL ANYTHING FROM THE INTERNET
 
         ./second.sh
-13) After the Raspberry Pi reboots after the execution of `second.sh`, you should be able to see the AP and Bluetooth set up.
+13) After the Raspberry Pi reboots after the execution of `second.sh`, you should be able to see the AP and Bluetooth set up. To access VNC, you will use the static IP address set on `first.sh`
 
 ## Quality of Life
 I have included functions that may/may not improve usability of the Raspberry Pi
