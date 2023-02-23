@@ -161,7 +161,16 @@ def main():
                             command = usb.receive_stm_command()
                             bluetooth.send_command(command=myRobot.get_coords())
                     bluetooth.send_command(command="FINISH/EXPLORE")
-                                
+
+                elif(task == "SIMULATOR"): # EXAMPLE: "START/SIMULATOR/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
+                    robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
+                    myRobot.robot_pos(delta_x=int(robot_pos[1]), delta_y=int(robot_pos[2]))
+                    bluetooth.send_command(command=myRobot.get_coords())
+                    
+                    obstacles = translator.android2clientTranslate(obs_data=command)
+                    
+                    wifi.main(obstacles=obstacles) #Connect to Laptop and send obstacle data
+                           
                 # Task 02
                 elif(task == "PATH"):
                     bluetooth.send_command(command="TASK #02")

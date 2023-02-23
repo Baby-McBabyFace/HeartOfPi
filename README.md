@@ -86,6 +86,7 @@ These are the requirements needed from the respective devices in order to use th
                                 # POS contains (R, x-axis, y-axis, orientation)
                                 # DATA contains obstacle data (obs_num, x-axis, y-axis, orientation)
 
+    START/SIMULATOR/{POS}/{DATA}# Module listens to this command to just send obstacle data to PC. NO EXECUTION ON THE ROBOT IS DONE
     START/PATH                  # Module listens to this command to start Task #02
     MOVE/{DIR}                  # Module listens to this command to move in the direction that is in the command 
     CUSTOMMOVE/{DIR}/{DIST}     # Module listens to this command to move in STRAIGHT direction with a custom distance
