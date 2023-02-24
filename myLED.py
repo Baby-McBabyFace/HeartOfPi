@@ -18,12 +18,12 @@ class myLED:
         # GPIO.output(self.gpioPin, GPIO.LOW)
         self.pwm.stop()
         
-    def blinkers(self):
+    def blinkers():
         for i in range(3):
             GPIO.output(23, GPIO.HIGH)
             time.sleep(0.3)
             GPIO.output(23, GPIO.LOW)
             time.sleep(0.1)
             
-    def close(self):
+    def close():
         GPIO.cleanup()

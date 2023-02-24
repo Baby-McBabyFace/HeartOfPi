@@ -160,6 +160,7 @@ def main():
                             
                             command = usb.receive_stm_command()
                             bluetooth.send_command(command=myRobot.get_coords())
+                    time.sleep(0.1)
                     bluetooth.send_command(command="FINISH/EXPLORE")
 
                 elif(task == "SIMULATOR"): # EXAMPLE: "START/SIMULATOR/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
@@ -184,10 +185,11 @@ def main():
                         while(True and (recognitionFailed < 2)):
                             result = take_pic.main() # Result of the image recognition
                             
-                            if(result == "38"):
+                            if(result == "39"):
                                 for i in range(recognitionFailed, 0, -1):
                                     usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
                                     myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                                    command = usb.receive_stm_command()
                                 
                                 recognitionFailed = 0
                                 
@@ -195,16 +197,17 @@ def main():
                                     usb.send_stm_command_axis(move=11)
                                     command = usb.receive_stm_command()
                                 elif(obs_counter < 2):
-                                    usb.send_stm_command_task02(move=13)
+                                    usb.send_stm_command_axis(move=13)
                                     command = usb.receive_stm_command()
                                 
                                 break
                             
-                            elif(result == "39"):
+                            elif(result == "38"):
                                 for i in range(recognitionFailed, 0, -1):
                                     usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
                                     myRobot.update_delta_straight(movement=1, distance=(10 * i))
-                                
+                                    command = usb.receive_stm_command()
+
                                 recognitionFailed = 0
                                 
                                 if(obs_counter < 1):
@@ -234,6 +237,7 @@ def main():
                         for i in range(recognitionFailed, 0, -1):
                             usb.send_stm_command_axis(move=1, x=0, y=(10 * i))
                             myRobot.update_delta_straight(movement=1, distance=(10 * i))
+                            command = usb.receive_stm_command()
                             
                             if(obs_counter == 0):
                                 usb.send_stm_command_axis(move=random.randint(11,12))
@@ -244,14 +248,13 @@ def main():
                         obs_counter += 1
                     
                     # Fianl command to receive
-                    command = usb.receive_stm_command()
                     bluetooth.send_command(command="FINISH/PATH")
                        
             # Manual Movements
             elif(instruction == "MOVE"):
                 direction = command.pop(0)
                 
-                bluetooth.send_command(command="Sending command to STM")
+                bluetooth.send_command(command="STATUS/Sending command to STM")
                 if(direction == "F"):
                     usb.send_stm_command_axis(move=1, x=0, y=10)
                     myRobot.update_delta_straight(movement=1, distance=10)
@@ -287,7 +290,7 @@ def main():
             elif(instruction == "CUSTOMMOVE"): # "CUSTOMMOVE/F/90"
                 direction = command.pop(0)
                 
-                bluetooth.send_command(command="Sending command to STM")
+                bluetooth.send_command(command="STATUS/Sending command to STM")
                 
                 distance = command.pop(0)
                 
@@ -305,7 +308,7 @@ def main():
             elif(instruction == "CUSTOMTURN"): # "CUSTOMTURN/L/180"
                 direction = command.pop(0)
                 
-                bluetooth.send_command(command="Sending command to STM")
+                bluetooth.send_command(command="STATUS/Sending command to STM")
                 
                 angle = command.pop(0)
                 
