@@ -118,10 +118,12 @@ def main():
                                     # Target found!
                                     if(result != "-1"):
                                         bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
+                                        time.sleep(0.1)
                                         successRecognition = True # Mark as success
                                     
                                     else:
                                         bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
+                                        time.sleep(0.1)
                                         recognitionFailed += 1
                                         # correctional movements
                                         if(recognitionFailed < 2):
@@ -162,6 +164,7 @@ def main():
                             bluetooth.send_command(command=myRobot.get_coords())
                     time.sleep(0.1)
                     bluetooth.send_command(command="FINISH/EXPLORE")
+                    time.sleep(0.1)
 
                 elif(task == "SIMULATOR"): # EXAMPLE: "START/SIMULATOR/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
                     robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
@@ -174,7 +177,7 @@ def main():
                            
                 # Task 02
                 elif(task == "PATH"):
-                    bluetooth.send_command(command="TASK #02")
+                    bluetooth.send_command(command="STATUS/TASK #02")
                     usb.send_stm_command_axis(move=10)
                     command = usb.receive_stm_command()
                     
@@ -249,6 +252,7 @@ def main():
                     
                     # Fianl command to receive
                     bluetooth.send_command(command="FINISH/PATH")
+                    time.sleep(0.1)
                        
             # Manual Movements
             elif(instruction == "MOVE"):
@@ -330,7 +334,7 @@ def main():
                 
                 command = usb.receive_stm_command()
                 bluetooth.send_command(command=myRobot.get_coords())
-                
+
             # Task A.5    
             elif(instruction == "BULLSEYE"): # "BULLSEYE"
                 while(True):                
