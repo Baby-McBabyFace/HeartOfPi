@@ -24,6 +24,13 @@ class myLED:
             time.sleep(0.3)
             GPIO.output(23, GPIO.LOW)
             time.sleep(0.1)
+    
+    def picTaken():
+        for i in range(2):
+            GPIO.output(24, GPIO.HIGH)
+            time.sleep(0.2)
+            GPIO.output(24, GPIO.LOW)
+            time.sleep(0.1)
             
     def close():
         GPIO.cleanup()

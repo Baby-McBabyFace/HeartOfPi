@@ -65,7 +65,7 @@ def main():
         usb = estUSB() 
         green = myLED.myLED(gpioPin=23, power=1)
         red = myLED.myLED(gpioPin=24, power=10)
-        wifi = estWifi(host=host, port=port)
+        # wifi = estWifi(host=host, port=port)
         
         # String to listen for when STM finishes command
         STMEND = "Movement Done!" 
@@ -101,7 +101,7 @@ def main():
                     obs_path = path.pop(0)
                     
                     while True:
-                        if(len(obs_path) == 0):
+                        if(len(obs_path) == 0) or (len(path)==0):
                             break
                         time.sleep(0.1)
                         bluetooth.send_command(command=f"STATUS/Looking for target {obs_path[0]}")
@@ -115,8 +115,10 @@ def main():
                                 recognitionFailed = 0
                                 while((not successRecognition) and (recognitionFailed < 2)):
                                     result = take_pic.main()
+                                    # result = "-1"
                                     # Target found!
                                     if(result != "-1"):
+                                        myLED.myLED.picTaken()
                                         bluetooth.send_command(command=f"TARGET/{obs_path[0]}/{result}")
                                         time.sleep(0.1)
                                         successRecognition = True # Mark as success
@@ -162,9 +164,12 @@ def main():
                             
                             command = usb.receive_stm_command()
                             bluetooth.send_command(command=myRobot.get_coords())
-                    time.sleep(0.1)
+                            time.sleep(0.1)
+                    time.sleep(0.2)
                     bluetooth.send_command(command="FINISH/EXPLORE")
-                    time.sleep(0.1)
+                    time.sleep(1)
+                    # bluetooth.send_command(command="FINISH/EXPLORE")
+                    # time.sleep(0.1)
 
                 elif(task == "SIMULATOR"): # EXAMPLE: "START/SIMULATOR/(R,04,03,0)/(00,08,10,90)/(01,12,06,-90)"
                     robot_pos = command.pop(0).replace("(", "").replace(")", "").split(",")
@@ -180,12 +185,13 @@ def main():
                     bluetooth.send_command(command="STATUS/TASK #02")
                     usb.send_stm_command_axis(move=10)
                     command = usb.receive_stm_command()
-                    
+
                     obs_counter = 0
                     while(obs_counter != 2):
                         # take photo
                         recognitionFailed = 0
                         while(True and (recognitionFailed < 2)):
+                            time.sleep(0.5)
                             result = take_pic.main() # Result of the image recognition
                             
                             if(result == "39"):
@@ -247,12 +253,13 @@ def main():
                             
                             elif(obs_counter == 1):
                                 usb.send_stm_command_axis(move=random.randint(13,14))
+                                command = usb.receive_stm_command()
                             
                         obs_counter += 1
                     
                     # Fianl command to receive
                     bluetooth.send_command(command="FINISH/PATH")
-                    time.sleep(0.1)
+                    time.sleep(1)
                        
             # Manual Movements
             elif(instruction == "MOVE"):
@@ -376,7 +383,7 @@ def main():
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
         usb.close()
-        wifi.close()
+        # wifi.close()
         myLED.myLED.close()
 
     except Exception as e:
@@ -385,7 +392,7 @@ def main():
         print("Closing all connections")
         bluetooth.close()
         usb.close()
-        wifi.close()
+        # wifi.close()
         myLED.myLED.close()
     
 if __name__ == '__main__':
