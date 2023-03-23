@@ -65,7 +65,7 @@ def main():
         usb = estUSB() 
         green = myLED.myLED(gpioPin=23, power=1)
         red = myLED.myLED(gpioPin=24, power=10)
-        # wifi = estWifi(host=host, port=port)
+        wifi = estWifi(host=host, port=port)
         
         # String to listen for when STM finishes command
         STMEND = "Movement Done!" 
@@ -383,7 +383,7 @@ def main():
         print("Keyboard interrupt detected...  Closing all connections")
         bluetooth.close()
         usb.close()
-        # wifi.close()
+        wifi.close()
         myLED.myLED.close()
 
     except Exception as e:
@@ -392,7 +392,7 @@ def main():
         print("Closing all connections")
         bluetooth.close()
         usb.close()
-        # wifi.close()
+        wifi.close()
         myLED.myLED.close()
     
 if __name__ == '__main__':
